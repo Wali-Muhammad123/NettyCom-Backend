@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from authemail.admin import EmailUserAdmin
 # Register your models here.
 class UserAdmin(EmailUserAdmin):
-    fields=(
+    fieldsets=(
         ('None',{'fields':('email','password')}),
         ('Personal info',{'fields':('first_name','last_name')}),
         ('Permissions',{'fields':('is_active','is_staff','is_superuser','groups','user_permissions','is_verified')}),
