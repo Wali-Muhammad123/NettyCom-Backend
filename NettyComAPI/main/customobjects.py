@@ -1,4 +1,5 @@
 import cryptography
+
 class BankDetails:
     '''
     This class is used to store bank details of a customer.

@@ -1,7 +1,7 @@
 from django.db import models
 from authemail.models import EmailAbstractUser, EmailUserManager
 import datetime 
-from .utils import US_STATES
+from .constants import US_STATES
 import uuid
 from django.conf import settings
 from .fields import BankDetailsField
@@ -11,6 +11,7 @@ class Agent(EmailAbstractUser):
     '''
     Custom User model for agents.
     '''
+    id=models.UUIDField(auto_created=True,unique=True,default=uuid.uuid1,editable=False,primary_key=True)
     objects=EmailUserManager()
     def __str__(self):
         return self.email
@@ -42,6 +43,7 @@ class SalesData(models.Model):
     status=models.CharField(max_length=20,choices=STATUS,default='Pending')
     
 class Teams(models.Model):
+    id=models.UUIDField(auto_created=True,unique=True,default=uuid.uuid1,editable=False,primary_key=True)
     teamname=models.CharField(max_length=20, default=None)
     teamleader=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, default=None)
 
