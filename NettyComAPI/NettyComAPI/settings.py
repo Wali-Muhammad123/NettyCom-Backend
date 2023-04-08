@@ -78,7 +78,14 @@ WSGI_APPLICATION = 'NettyComAPI.wsgi.application'
 REST_FRAMEWORK ={
     'DEFAULT_AUTHENTICATION_CLASSES':(
         'rest_framework.authentication.TokenAuthentication',
-    )
+    ),
+    'DEFAULT_THROTTLE_CLASSES':[
+    'rest_framework.throttling.ScopedRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES':{
+    'addresschecker':'50/day',
+    }
+
 }
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
