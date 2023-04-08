@@ -6,6 +6,7 @@ import uuid
 from django.conf import settings
 from .fields import BankDetailsField
 # Create your models here.
+
 class Agent(EmailAbstractUser):
     '''
     Custom User model for agents.
@@ -43,9 +44,11 @@ class SalesData(models.Model):
 class Teams(models.Model):
     teamname=models.CharField(max_length=20, default=None)
     teamleader=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, default=None)
+
 class TeamMembers(models.Model):
     team=models.ForeignKey(Teams,on_delete=models.PROTECT, default=None)
     member=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, default=None)
+
 class Directories(models.Model):
     STATES=US_STATES
     postalcode=models.CharField(max_length=10,default=None)
