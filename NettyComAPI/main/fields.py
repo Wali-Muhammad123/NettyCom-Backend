@@ -1,4 +1,4 @@
-from .customobjects import BankDetails
+from .utilclasses import BankDetails
 from django.db import models
 
 #create customfield for BankDetails here
