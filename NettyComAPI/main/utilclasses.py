@@ -1,5 +1,6 @@
-import cryptography
-
+import requests
+from django.conf import settings
+import json 
 class BankDetails:
     '''
     This class is used to store bank details of a customer.
@@ -9,3 +10,7 @@ class BankDetails:
         self.bank_name=bank_name
     def __str__(self) -> str:
         return f'{self.account_number},{self.bank_name}'
+
+
+
+
