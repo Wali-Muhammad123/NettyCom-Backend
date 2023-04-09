@@ -5,6 +5,7 @@ from .constants import US_STATES
 import uuid
 from django.conf import settings
 from .fields import BankDetailsField
+from django.contrib.postgres.fields import JSONField, ArrayField
 # Create your models here.
 
 class Agent(EmailAbstractUser):
@@ -56,14 +57,15 @@ class Directories(models.Model):
     postalcode=models.CharField(max_length=10,default=None)
     state=models.CharField(max_length=2,choices=STATES, default=None)
     city=models.CharField(max_length=20, default=None)
+    coordinates=ArrayField(models.FloatField(),size=2)
     radius_mile=models.IntegerField(default=0)
 
 class AddressCheckerUsage(models.Model):
     user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, default=None)
-    date=models.DateField(default=datetime.date.today)
-    address_requested=models.CharField(max_length=70, default=None)
+    date=models.DateField(default=datetime.date.today, auto_created=True)
+    directory=models.ForeignKey(Directories,on_delete=models.PROTECT,default=None,blank=True,null=True)
+    response=JSONField(default=None,blank=True,null=True)
     sale_associated=models.ForeignKey(SalesData,on_delete=models.PROTECT,default=None,blank=True,null=True)
     def save(self,*args,**kwargs):
-        self.date=datetime.date.today()
         super(AddressCheckerUsage,self).save(*args,**kwargs)
     
