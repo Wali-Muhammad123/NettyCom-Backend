@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import SalesData, Agent, AddressCheckerUsage, Directories
+from jsonfield.encoder import JSONEncoder
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,9 +17,16 @@ class AddressCheckerSerializer(serializers.ModelSerializer):
     class Meta:
         model = AddressCheckerUsage
         fields='__all__'
+
 class DirectorySerializer(serializers.ModelSerializer):
-    coordinates=serializers.ListField(child=serializers.FloatField(),allow_blank=False,max_length=2,min_length=2)
+    coordinates=serializers.JSONField(encoder=JSONEncoder)
     class Meta:
         model=Directories
         fields='__all__'
+    def validate_coordinates(self,json_dict):
+        if type(json_dict)!=dict:
+            raise serializers.ValidationError("Coordinates must be a dictionary")
+        if 'lat' not in json_dict or 'lon' not in json_dict:
+            raise serializers.ValidationError("Coordinates must have latitude and longitude")
+        return json_dict
    
