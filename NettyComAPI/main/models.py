@@ -1,11 +1,16 @@
+import datetime
+import uuid
 from django.db import models
 from authemail.models import EmailAbstractUser, EmailUserManager
-import datetime
-from .constants import US_STATES
-import uuid
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
+from jsonfield import JSONField
+from jsonfield.encoder import JSONEncoder
+from .constants import US_STATES
+
+
 from .fields import BankDetailsField
-from django.contrib.postgres.fields import JSONField, ArrayField
+
 # Create your models here.
 
 
@@ -87,7 +92,7 @@ class Directories(models.Model):
     postalcode = models.CharField(max_length=10, default=None)
     state = models.CharField(max_length=2, choices=STATES, default=None)
     city = models.CharField(max_length=20, default=None)
-    coordinates = ArrayField(models.FloatField(), size=2)
+    coordinates = JSONField(encoder=JSONEncoder, default=None)
     radius_mile = models.IntegerField(default=0)
 
 
