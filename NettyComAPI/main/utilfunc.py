@@ -1,10 +1,8 @@
 from django.conf import settings
 import pandas as pd
 import numpy as np
-from copy import deepcopy
 from .serializers import DirectorySerializer
-from .exceptions import InsufficientDataError
-from .utilclasses import CellError
+from .exceptions import InsufficientDataError, DataProcessingFailedError
 
 def geourlmaker(*args,**kwargs):
     #making sure that all parameters are present in kwargs
@@ -38,7 +36,8 @@ def parsegeojson(response):
             return [data['results'][0]['position']['lat'], #extracting latitude 
                     data['results'][0]['position']['lon'], #extracting longitude
                     data['results'][0]['address']['countrySubdivision'], #extracting State
-                    data['results'][0]['address']['postalCode'] #extract postal code
+                    data['results'][0]['address']['postalCode'], #extract postal code
+                    data['results'][0]['address']['countrySecondarySubdivision'] #extract city
                     ]
         else:
             return [None,None]
@@ -92,5 +91,5 @@ def matrix_parser(json_data):
                 minRoute['destinationIndex'],
                 minRoute['routeSummary'],
             ]
-    except:
-        ...
+    except KeyError as exc:
+        raise DataProcessingFailedError from exc

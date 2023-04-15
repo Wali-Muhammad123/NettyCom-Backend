@@ -1,5 +1,6 @@
-from django.core.db.signals import pre_save,post_save, m2m_changed
+from django.db.models.signals import pre_save,post_save
 from django.dispatch import receiver
+from django.core.exceptions import ObjectDoesNotExist
 from .models import AddressCheckerUsage, Teams, TeamMembers
 #import sending email
 from django.core.mail import send_mail
@@ -15,12 +16,13 @@ def team_callback(sender,instance, **kwargs):
         #send email whene a new team member is added
         try:
             send_mail(
-                'New Team Member',
-                'A new team member has been added to your team',
-                [instance.team.teamleader.email],
+                subject='New Team Member',
+                message='A new team member has been added to your team',
+                recipient_list=[instance.team.teamleader.email],
                 fail_silently=False,
+                from_email=None
             )
-        except:
+        except ObjectDoesNotExist:
             pass
     else: 
         pass

@@ -15,3 +15,12 @@ class TimeOutError(APIException):
     default_code='Request Timeout'
     default_detail='Request Timed Out. Try Again Later'
 
+class NullQueryError(APIException):
+    status_code=status.HTTP_404_NOT_FOUND
+    default_code="Address not found in the working state"
+    default_detail="Address not found in the working state"
+
+class DataProcessingFailedError(APIException):
+    status_code=status.HTTP_400_BAD_REQUEST
+    default_code="Processing Data Matrix Failed. Retry or Try Again Later"
+    default_detail="An error occured when processing data of router matrix"

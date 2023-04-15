@@ -93,7 +93,8 @@ class Directories(models.Model):
     state = models.CharField(max_length=2, choices=STATES, default=None)
     city = models.CharField(max_length=20, default=None)
     coordinates = JSONField(encoder=JSONEncoder, default=None)
-    radius_mile = models.IntegerField(default=0)
+    radius_mile = models.FloatField(default=None)
+    objects=models.Manager()
 
 
 class AddressCheckerUsage(models.Model):
@@ -108,6 +109,7 @@ class AddressCheckerUsage(models.Model):
     response = JSONField(default=None, blank=True, null=True)
     sale_associated = models.ForeignKey(
         SalesData, on_delete=models.PROTECT, default=None, blank=True, null=True)
+    objects=models.Manager()
 
     def save(self, *args, **kwargs):
         super(AddressCheckerUsage, self).save(*args, **kwargs)
