@@ -1,6 +1,9 @@
-from django.core.db.signals import pre_save,post_save, m2m_changed
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
-from .models import AddressCheckerUsage, Teams, TeamMembers
+from django.db.utils import IntegrityError
+from rest_framework.response import Response
+from rest_framework import status
+from .models import AddressCheckerUsage, Teams, TeamMembers, AgentProfile
 #import sending email
 from django.core.mail import send_mail
 
@@ -24,6 +27,17 @@ def team_callback(sender,instance, **kwargs):
             pass
     else: 
         pass
-
-
+@receiver(post_save, sender=Teams)
+def team_trans(sender,instance,**kwargs):
+    #create a new team member when a new team is created
+    team_name=instance.team_name
+    team_member=instance.teamleader
+    try:
+        teamTrans=TeamMembers.objects.create(team_name=team_name,team_lead=team_member)
+        agent=AgentProfile.objects.get(uuid=team_member)
+        agent.isTeamLeader=True
+        agent.save()
+        teamTrans.save()
+    except IntegrityError as e: 
+        return Response({'msg':'Error Creating Team'}, status=status.HTTP_400_BAD_REQUEST)
 

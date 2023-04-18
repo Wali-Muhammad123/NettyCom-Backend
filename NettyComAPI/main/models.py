@@ -1,9 +1,10 @@
 from django.db import models
 from authemail.models import EmailAbstractUser, EmailUserManager
-import datetime 
-from .constants import US_STATES
-import uuid
 from django.conf import settings
+from django.core.validators import RegexValidator
+import datetime 
+import uuid
+from .constants import US_STATES
 from .fields import BankDetailsField
 # Create your models here.
 
@@ -11,17 +12,23 @@ class Agent(EmailAbstractUser):
     '''
     Custom User model for agents.
     '''
-    id=models.UUIDField(auto_created=True,unique=True,default=uuid.uuid1,editable=False,primary_key=True)
+    uuid=models.UUIDField(unique=True,default=uuid.uuid4,editable=False,primary_key=True)
     objects=EmailUserManager()
     def __str__(self):
-        return self.email
+        return str(self.email)
 
 class AgentProfile(models.Model):
     user=models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    phone=models.CharField(max_length=20)
+    phone=models.CharField(max_length=20,validators=[
+        RegexValidator(
+        regex=r'^\+92\d{2,5}\d{7,8}$',
+        message='Phone number must be entered in the format: +92XXXXXXXXXX. Up to 15 digits allowed.',
+        )])
     level=models.IntegerField(default=1)
     bank_details=BankDetailsField(max_length=100)
+    isTeamLeader=models.BooleanField(default=False)
     referral=models.UUIDField(auto_created=True,unique=True,default=uuid.uuid1,editable=False)
+    objects=models.Manager()
     def save(self,*args,**kwargs):
         super(AgentProfile,self).save(*args,**kwargs)
 
@@ -44,12 +51,15 @@ class SalesData(models.Model):
     
 class Teams(models.Model):
     id=models.UUIDField(auto_created=True,unique=True,default=uuid.uuid1,editable=False,primary_key=True)
-    teamname=models.CharField(max_length=20, default=None)
+    teamname=models.CharField(max_length=20, default=None,unique=True)
     teamleader=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, default=None)
-
+    objects=models.Manager()
 class TeamMembers(models.Model):
     team=models.ForeignKey(Teams,on_delete=models.PROTECT, default=None)
     member=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, default=None)
+    objects=models.Manager()
+    class Meta:
+        unique_together=('team','member')
 
 class Directories(models.Model):
     STATES=US_STATES
