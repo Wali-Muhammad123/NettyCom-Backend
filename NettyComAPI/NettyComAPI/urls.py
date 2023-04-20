@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-
+from authemail.views import SignupVerify, PasswordResetVerify
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(' ',include('main.urls'))
+    path('api/',include('main.urls')),
+    path('auth/',include('authemail.urls')),
+    path('signup/verify/',SignupVerify.as_view(),name='verify'),
+    path('password/reset/verify/',PasswordResetVerify.as_view(),name='verify')
 ]
