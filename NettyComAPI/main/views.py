@@ -82,7 +82,7 @@ class SaleView(generics.GenericAPIView):
         serializer.save()
         return Response(serializer.data,status=status.HTTP_200_OK)
 
-class TeamSales(viewsets.ViewSet):
+class TeamSalesView(viewsets.ViewSet):
     authentication_classes=[TokenAuthentication]
     permission_classes=[IsAuthenticated, IsTeamLead]
     serializer_class=TeamSerializer

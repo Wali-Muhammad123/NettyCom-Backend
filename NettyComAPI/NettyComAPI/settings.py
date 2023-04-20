@@ -84,6 +84,7 @@ REST_FRAMEWORK ={
     ],
     'DEFAULT_THROTTLE_RATES':{
     'addresschecker':'50/day',
+    'sales':'60/day'
     }
 
 }
