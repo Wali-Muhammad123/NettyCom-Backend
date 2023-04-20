@@ -8,9 +8,23 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SaleSerializer(serializers.ModelSerializer):
+    agent=serializers.PrimaryKeyRelatedField(queryset=Agent.objects.all())
     class Meta:
         model = SalesData
         fields = '__all__'
+    def update(self,instance,validated_data):
+        for key,value in validated_data.items():
+            setattr(instance,key,value)
+        instance.save()
+        return instance
+    def create(self,validated_data):
+        sale=SalesData.objects.create(**validated_data)
+        return sale
+class _SaleSerializer(serializers.ModelSerializer):
+    agent=UserSerializer(read_only=True)
+    class Meta:
+        model=SalesData
+        fields=['agent','id','status','clientname','sale_amount']
 
 class AddressCheckerSerializer(serializers.Serializer):
     user=serializers.PrimaryKeyRelatedField(queryset=Agent.objects.all())

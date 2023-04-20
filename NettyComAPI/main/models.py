@@ -45,9 +45,11 @@ class SalesData(models.Model):
     clientphone=models.CharField(max_length=20, default=None)
     clientemail=models.EmailField(default=None,blank=True,null=True)
     clientaddress=models.CharField(max_length=70, default=None)
+    sale_amount=models.IntegerField(default=0)
     appointmentdate=models.DateField(default=datetime.date.today)
     appointmenttime=models.TimeField(default=datetime.time(0,0))
     status=models.CharField(max_length=20,choices=STATUS,default='Pending')
+    objects=models.Manager()
     
 class Teams(models.Model):
     id=models.UUIDField(auto_created=True,unique=True,default=uuid.uuid1,editable=False,primary_key=True)
