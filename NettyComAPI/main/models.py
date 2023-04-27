@@ -78,4 +78,29 @@ class AddressCheckerUsage(models.Model):
     def save(self,*args,**kwargs):
         self.date=datetime.date.today()
         super(AddressCheckerUsage,self).save(*args,**kwargs)
-    
+
+class Finance(models.Model):
+    user=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, default=None)
+    associated_sale=models.ForeignKey(SalesData,on_delete=models.PROTECT,default=None,blank=True,null=True)
+    amount_recieved=models.FloatField(default=None)
+    date=models.DateField(default=datetime.date.today)
+    objects=models.Manager()
+    def save(self,*args,**kwargs):
+        netEarning=0
+        if self.associated_sale:
+            netEarning=self.associated_sale.sale_amount*0.05
+            self.amount_recieved=netEarning
+        else:
+            self.amount_recieved=0
+        super(Finance,self).save(*args,**kwargs)
+class CommisionEarned(models.Model):
+    teamleader=models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, default=None)
+    commissionEarned=models.FloatField(default=0.0)
+    details_data=models.JSONField(default=dict)
+    objects=models.Manager()
+    class Meta:
+        unique='teamleader'
+    def save(self,*args,**kwargs):
+        self.commisionEarned=0
+        self.details_data={}
+        super(CommisionEarned,self).save(*args,**kwargs)
